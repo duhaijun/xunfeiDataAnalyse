@@ -2,19 +2,36 @@
 ##### 代码基于 https://github.com/gaussic/text-classification-cnn-rnn 做了部分修改。
 
 # 数据分析
-![训练数据类别数统计直方图](https://www.showdoc.cc/server/api/common/visitfile/sign/eec56ce82c8bddef3afd1bdfc481bdab?showdoc=.jpg "训练数据类别数统计直方图")
-**图1 训练数据类别数统计直方图**
+<p align="center">
+	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/eec56ce82c8bddef3afd1bdfc481bdab?showdoc=.jpg" alt="Sample"  width="600" height="300">
+	<p align="center">
+		<em>图1 训练数据类别数统计直方图</em>
+	</p>
+</p>
 
-![训练数据类别数统计饼图](https://www.showdoc.cc/server/api/common/visitfile/sign/f830fcc1cc732f500e1f84046640ae8f?showdoc=.jpg "训练数据类别数统计饼图")
-**图2 训练数据类别数统计饼图**
+<p align="center">
+	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/f830fcc1cc732f500e1f84046640ae8f?showdoc=.jpg" alt="Sample"  width="600" height="600">
+	<p align="center">
+		<em>图2 训练数据类别数统计饼图</em>
+	</p>
+</p>
+
 从上图1和图2中可以看出，训练数据存在严重的类别不平衡问题，有两个类的数量远远超过其他类，有的类的数据量非常少。因此，后续第一步要解决的就是训练数据类别不平衡问题。
 同时，总的数据量不是很大，可以考虑用SVM等方法。
 
-![饼图](https://www.showdoc.cc/server/api/common/visitfile/sign/0df210cadf10987d68d51eebd5201d28?showdoc=.jpg "饼图")
-图3 字符长长度统计结果饼图
+<p align="center">
+	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/0df210cadf10987d68d51eebd5201d28?showdoc=.jpg" alt="Sample"  width="600" height="600">
+	<p align="center">
+		<em>图3 字符长长度统计结果饼图</em>
+	</p>
+</p>
 
-![直方图](https://www.showdoc.cc/server/api/common/visitfile/sign/e3a9acb16837056192b04efb10e3e4fa?showdoc=.jpg "直方图")
-图4 字符串长度统计直方图
+<p align="center">
+	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/e3a9acb16837056192b04efb10e3e4fa?showdoc=.jpg" alt="Sample"  width="600" height="300">
+	<p align="center">
+		<em>图4 字符串长度统计直方图</em>
+	</p>
+</p>
 
 从图3和图4中可以看出，训练数据中的字符串长度大部分都小于2000，均值为600。因此，后续在模型中，最大字符串长度这个参数可以取均值的两倍。
 
