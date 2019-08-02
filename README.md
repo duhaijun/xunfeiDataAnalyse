@@ -3,12 +3,12 @@
 
 # 数据分析
 <p align="center">
-	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/eec56ce82c8bddef3afd1bdfc481bdab?showdoc=.jpg" alt="Sample"  width="800" height="300">
+	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/eec56ce82c8bddef3afd1bdfc481bdab?showdoc=.jpg" alt="Sample"  width="800" height="300"><br>
 	图1 训练数据类别数统计直方图
 </p>
 
 <p align="center">
-	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/f830fcc1cc732f500e1f84046640ae8f?showdoc=.jpg" alt="Sample"  width="600" height="600">
+	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/f830fcc1cc732f500e1f84046640ae8f?showdoc=.jpg" alt="Sample"  width="600" height="600"><br>
 	图2 训练数据类别数统计饼图
 </p>
 
@@ -16,12 +16,12 @@
 同时，总的数据量不是很大，可以考虑用SVM等方法。
 
 <p align="center">
-	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/0df210cadf10987d68d51eebd5201d28?showdoc=.jpg" alt="Sample"  width="600" height="600">
+	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/0df210cadf10987d68d51eebd5201d28?showdoc=.jpg" alt="Sample"  width="600" height="600"><br>
 	图3 字符长长度统计结果饼图
 </p>
 
 <p align="center">
-	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/e3a9acb16837056192b04efb10e3e4fa?showdoc=.jpg" alt="Sample"  width="700" height="300">
+	<img src="https://www.showdoc.cc/server/api/common/visitfile/sign/e3a9acb16837056192b04efb10e3e4fa?showdoc=.jpg" alt="Sample"  width="700" height="300"><br>
 	图4 字符串长度统计直方图
 </p>
 
