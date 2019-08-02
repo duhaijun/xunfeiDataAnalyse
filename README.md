@@ -48,8 +48,9 @@
 在上述部分中，BERT模型得到的结果已经是较好的了，后续提升的幅度不大。因此，考虑通过模型融合对结果进行进一步的提升。
 
 思路：先把TextCNN和TextRNN进行融合，在将融合后的模型与BERT进行融合。
-
+## Bagging
 项目中bagging_predict.py对应的是TextCNN和TextRNN使用bagging方法进行融合；
 ![bagging](https://www.showdoc.cc/server/api/common/visitfile/sign/2b0a9b123de902186a39c4a7b0fcc909?showdoc=.jpg "bagging")
 
+## Boosting
 boosting_data_processing.py实现的功能是在TextCNN训练完后，对训练集样本的权重进行更新并生成更新后的训练集给TextRNN用。
