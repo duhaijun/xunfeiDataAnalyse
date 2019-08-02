@@ -10,11 +10,11 @@
 从上图1和图2中可以看出，训练数据存在严重的类别不平衡问题，有两个类的数量远远超过其他类，有的类的数据量非常少。因此，后续第一步要解决的就是训练数据类别不平衡问题。
 同时，总的数据量不是很大，可以考虑用SVM等方法。
 
-![字符长长度统计结果直方图](https://www.showdoc.cc/server/api/common/visitfile/sign/96b42150c3002e27e560a79602615c55?showdoc=.jpg "字符长长度统计结果直方图")
-图3 字符长长度统计结果直方图
+![饼图](https://www.showdoc.cc/server/api/common/visitfile/sign/0df210cadf10987d68d51eebd5201d28?showdoc=.jpg "饼图")
+图3 字符长长度统计结果饼图
 
-![字符串长度统计饼图](https://www.showdoc.cc/server/api/common/visitfile/sign/cee9518d1375922725129e26d8a11e78?showdoc=.jpg "字符串长度统计饼图")
-图4 字符串长度统计饼图
+![直方图](https://www.showdoc.cc/server/api/common/visitfile/sign/e3a9acb16837056192b04efb10e3e4fa?showdoc=.jpg "直方图")
+图4 字符串长度统计直方图
 
 从图3和图4中可以看出，训练数据中的字符串长度大部分都小于2000，均值为600。因此，后续在模型中，最大字符串长度这个参数可以取均值的两倍。
 
