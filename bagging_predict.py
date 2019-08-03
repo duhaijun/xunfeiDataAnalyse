@@ -12,6 +12,7 @@ from data.cnews_loader import read_category, read_vocab
 import ipdb
 import pandas as pd
 import numpy as np
+import sys
 
 try:
     bool(type(unicode))
@@ -28,7 +29,6 @@ rnn_save_dir = './checkpoints/textrnn'
 cnn_save_path = os.path.join(cnn_save_dir, 'best_validation')  # 最佳验证结果保存路径
 rnn_save_path = os.path.join(rnn_save_dir, 'best_validation')  # 最佳验证结果保存路径
 
-sess = tf.Session()
 categories, cat_to_id = read_category()
 words, word_to_id = read_vocab(vocab_dir)
 
@@ -40,12 +40,15 @@ class CnnModel:
         self.words = words
         self.word_to_id = word_to_id
         self.config.vocab_size = len(self.words)
-        self.model = TextCNN(self.config)
+        self.graph = tf.Graph()
+        self.session = tf.Session(graph=self.graph)
 
-        self.session = sess
-        self.session.run(tf.global_variables_initializer())
-        saver = tf.train.Saver()
-        saver.restore(sess=self.session, save_path=cnn_save_path)  # 读取保存的模型
+        with self.session.as_default():
+            with self.graph.as_default():
+                self.model = TextCNN(self.config)
+                self.session.run(tf.global_variables_initializer())
+                self.saver = tf.train.Saver()
+                self.saver.restore(sess=self.session, save_path=cnn_save_path)  # 读取保存的模型
 
     def predict(self, message):
         # 支持不论在python2还是python3下训练的模型都可以在2或者3的环境下运行
@@ -57,9 +60,10 @@ class CnnModel:
             self.model.keep_prob: 1.0
         }
 
-        self.cnn_logits = self.session.run(self.model.logits_softmax, feed_dict=feed_dict)
+        with self.session.as_default():
+            with self.session.graph.as_default():
+                self.cnn_logits = self.session.run(self.model.logits_softmax, feed_dict=feed_dict)
         return self.cnn_logits
-
 
 class RnnModel:
     def __init__(self):
@@ -69,12 +73,15 @@ class RnnModel:
         self.words = words
         self.word_to_id = word_to_id
         self.config.vocab_size = len(self.words)
-        self.model = TextRNN(self.config)
+        self.graph = tf.Graph()
+        self.session = tf.Session(graph=self.graph)
 
-        self.session = sess
-        self.session.run(tf.global_variables_initializer())
-        saver = tf.train.Saver()
-        saver.restore(sess=self.session, save_path=rnn_save_path)  # 读取保存的模型
+        with self.session.as_default():
+            with self.graph.as_default():
+                self.model = TextRNN(self.config)
+                self.session.run(tf.global_variables_initializer())
+                self.saver = tf.train.Saver()
+                self.saver.restore(sess=self.session, save_path=rnn_save_path)  # 读取保存的模型
 
     def predict(self, message):
         # 支持不论在python2还是python3下训练的模型都可以在2或者3的环境下运行
@@ -86,14 +93,16 @@ class RnnModel:
             self.model.keep_prob: 1.0
         }
 
-        self.rnn_logits = self.session.run(self.model.logits_softmax, feed_dict=feed_dict)
-
+        with self.session.as_default():
+            with self.session.graph.as_default():
+                self.rnn_logits = self.session.run(self.model.logits_softmax, feed_dict=feed_dict)
         return self.rnn_logits
 
 
 if __name__ == '__main__':
-    cnn_model = CnnModel()
-    rnn_model = RnnModel()
+    if len(sys.argv) != 2 or sys.argv[1] not in ['cnn', 'rnn', 'bagging', 'boosting']:
+        raise ValueError("""usage: python bagging_predict.py [cnn / rnn / bagging / boosting]""")
+
     dictionary = os.path.join(cnn_base_dir, "apptype_train_categories.csv")
     dic = pd.read_csv(dictionary, encoding="utf-8")
     dic.drop(["Unnamed: 0"], axis=1, inplace=True)
@@ -104,22 +113,44 @@ if __name__ == '__main__':
     predict_path = os.path.join(base_dir, "app_test_tokinize.csv")
     test_txt = pd.read_csv(predict_path)
 
-    dict = {"id":[], "label1":[], "label2":[]}
+    dict = {"id": [], "label1": [], "label2": []}
     result = pd.DataFrame(dict)
 
-    for index, rows in test_txt.iterrows():
-        i = result.shape[0]
-        cnn_predict_result = cnn_model.predict(rows["1"])
-        rnn_predict_result = rnn_model.predict(rows["1"])
-        predict_result = np.argsort(cnn_predict_result + rnn_predict_result)
+    if sys.argv[1] == 'cnn':
+        cnn_model = CnnModel()
+        for index, rows in test_txt.iterrows():
+            i = result.shape[0]
+            cnn_predict_result = cnn_model.predict(rows["1"])
+            predict_result_1 = categories[cnn_predict_result[0][-1]]
+            predict_result_2 = categories[cnn_predict_result[0][-2]]
+            result.loc[i + 1] = [rows["0"], predict_result_1, predict_result_2]
+            print(index)
 
-        ipdb.set_trace()
+    elif sys.argv[1] == 'rnn':
+        rnn_model = RnnModel()
+        for index, rows in test_txt.iterrows():
+            i = result.shape[0]
+            rnn_predict_result = rnn_model.predict(rows["1"])
+            predict_result_1 = categories[rnn_predict_result[0][-1]]
+            predict_result_2 = categories[rnn_predict_result[0][-2]]
+            result.loc[i + 1] = [rows["0"], predict_result_1, predict_result_2]
+            print(index)
 
-        predict_result_1 = categories(predict_result[-1])
-        predict_result_2 = categories(predict_result[-2])
+    elif sys.argv[1] == 'bagging':
+        cnn_model = CnnModel()
+        rnn_model = RnnModel()
+        for index, rows in test_txt.iterrows():
+            i = result.shape[0]
+            cnn_predict_result = cnn_model.predict(rows["1"])
+            rnn_predict_result = rnn_model.predict(rows["1"])
+            bagging_predict_result = cnn_predict_result + rnn_predict_result
+            predict_result_1 = categories[bagging_predict_result[0][-1]]
+            predict_result_2 = categories[bagging_predict_result[0][-2]]
+            result.loc[i + 1] = [rows["0"], predict_result_1, predict_result_2]
+            print(index)
 
-        result.loc[i+1] = [rows["0"], predict_result_1, predict_result_2]
-        print (index)
+    elif sys.argv[1] == 'boosting':
+        print(" Current no")
 
     result = result.replace(dic_backup)
-    result.to_csv(os.path.join(base_dir, "pre_test_8.csv"), index=None, encoding="utf-8")
+    result.to_csv(os.path.join(base_dir, "pre_test_9.csv"), index=None, encoding="utf-8")
